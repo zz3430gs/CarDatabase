@@ -49,7 +49,6 @@ def Create_car_table():
     MODEL VARCHAR(50) NOT NULL,
     PRICE INTEGER NOT NULL);'''))
 
-    # car_test_data()
     conn.close()
     print("DB closed")
 
@@ -73,7 +72,7 @@ def add_car():
 
     make = input("What is the make of the car?\n")
     year = int(input("What is the year of the car?\n"))
-    model = input("What is the mocel of the car?\n")
+    model = input("What is the model of the car?\n")
     price = int(input("What is the price of the car?\n"))
 
     car_make = create_car(make, year, model, price)
@@ -101,8 +100,8 @@ def sell_car():
     model = input("What is the model of car\n")
 
     #for now it works but I know it will delete others of the same model
-    #TODO: delete a car but not delete a car with the same make and model but different year and pricing
-    stringQuery = "DELETE FROM cars WHERE MAKE = '%s'" % model
+    #TODO: delete a car but not delete a car with the same make and model or have different year and pricing
+    stringQuery = "DELETE FROM cars WHERE MODEL = '%s'" % model
     delete_cursor = conn.cursor()
     delete_cursor.execute(stringQuery)
     conn.commit()
@@ -117,7 +116,7 @@ def search_car():
     if search_options == 1:
         conn = sqlite3.connect('car.db')
         make_cursor = conn.cursor()
-        make = input("What make of car are you looking for?")
+        make = input("What make of car are you looking for?\n")
         makeString = "SELECT * FROM cars WHERE MAKE = '%s'" % make
         try:
             make_cursor.execute(makeString)
@@ -129,7 +128,7 @@ def search_car():
 
     elif search_options == 2:
         conn = sqlite3.connect('car.db')
-        year = int(input("What year of car are you looking for?"))
+        year = int(input("What year of car are you looking for?\n"))
         year_cursor = conn.cursor()
         yearString = "SELECT * FROM cars WHERE CARYEAR = '%s'" % year
         try:
