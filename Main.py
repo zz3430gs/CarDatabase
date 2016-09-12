@@ -83,6 +83,7 @@ def add_car_to_database(c):
     try:
         add_cursor.execute('INSERT INTO cars VALUES (?,?,?,?)', (c.make, c.year, c.model, c.price))
         conn.commit()
+        print("Car Added")
     except Error as e:
         print("Error: ", e, "occured")
 
@@ -98,7 +99,8 @@ def sell_car():
     stringQuery = "DELETE FROM cars WHERE MAKE = '%s'" % model
     delete_cursor = conn.cursor()
     delete_cursor.execute(stringQuery)
-
+    conn.commit()
+    print(model + " is sold")
     conn.close()
     print("DB is closed")
 
@@ -114,6 +116,7 @@ def search_car():
         makeString = "SELECT * FROM cars WHERE make = '%s'" % make
         try:
             make_cursor.execute(makeString)
+
             for cars in make_cursor.fetchall():
                 print(create_car(cars[0], str(cars[1]), cars[2], str(cars[3])))
         except Error as e:
@@ -126,6 +129,7 @@ def search_car():
         yearString = "SELECT * FROM cars WHERE make = '%s'" % year
         try:
             year_cursor.execute(yearString)
+
             for cars in year_cursor.fetchall():
                 print(create_car(cars[0], str(cars[1]), cars[2], str(cars[3])))
         except Error as e:
@@ -140,6 +144,7 @@ def search_car():
         modelString = "SELECT * FROM cars WHERE make = '%s'" % model
         try:
             model_cursor.execute(modelString)
+
             #Tries to print out the query
             for cars in model_cursor.fetchall():
                 print(create_car(cars[0], str(cars[1]), cars[2], str(cars[3])))
@@ -153,11 +158,13 @@ def search_car():
         if price >= 0 or price <= 20000:
             try:
                 price_cursor.execute('SELECT * FROM cars WHERE price >= 0 OR price <= 20000')
+
             except Error as e:
                 print('Error: ', e, 'occured')
         elif price > 20000 or price <= 50000:
             try:
                 price_cursor.execute('SELECT * FROM cars WHERE price > 20000 OR price <= 50000')
+
             except Error as e:
                 print('Error: ', e, 'occured')
     elif search_options == 5:
@@ -175,21 +182,21 @@ def display_search_option():
 
 #Tried to add but didn't seem to work
 #TODO: try to make a test data that works
-def car_test_data():
-    conn = sqlite3.connect('car.db')
-    print("Adding car data")
-
-    conn.execute('INSERT INTO cars VALUES'('Toyota', 2009, 'Corolla', 16000))
-    conn.execute('INSERT INTO cars VALUES'("Honda", 2001, "Accord", 15000))
-    conn.execute('INSERT INTO cars VALUES'("Subaru", 2004, "Impreza", 25000))
-    conn.execute('INSERT INTO cars VALUES'("Toyota", 2009, "Tundra", 22000))
-    conn.execute('INSERT INTO cars VALUES'("Chevrolet", 2017, "Camaro", 32000))
-    conn.execute('INSERT INTO cars VALUES'("Mitsubishi", 2003, "Evolution", 25000))
-
-    print("Done adding test data")
-
-    print("Db closed")
-    conn.close()
+# def car_test_data():
+#     conn = sqlite3.connect('car.db')
+#     print("Adding car data")
+#
+#     conn.execute('INSERT INTO cars VALUES'('Toyota', 2009, 'Corolla', 16000))
+#     conn.execute('INSERT INTO cars VALUES'("Honda", 2001, "Accord", 15000))
+#     conn.execute('INSERT INTO cars VALUES'("Subaru", 2004, "Impreza", 25000))
+#     conn.execute('INSERT INTO cars VALUES'("Toyota", 2009, "Tundra", 22000))
+#     conn.execute('INSERT INTO cars VALUES'("Chevrolet", 2017, "Camaro", 32000))
+#     conn.execute('INSERT INTO cars VALUES'("Mitsubishi", 2003, "Evolution", 25000))
+#
+#     print("Done adding test data")
+#
+#     print("Db closed")
+#     conn.close()
 
 Create_car_table()
 # car_test_data()
