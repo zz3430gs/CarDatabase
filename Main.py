@@ -57,6 +57,16 @@ def create_car(make, year, model, price):
     make = Car(make, year, model, price)
     return make
 
+def method():
+    car_list = []
+    for cars in Car:
+        make = cars[0].strip()
+        year = cars[1].strip()
+        model = cars[2].strip()
+        price = cars[3].strip()
+
+    car_list.append(make,year,model,price)
+
 #Add a new Car to the database
 def add_car():
     print("Add Car Method")
@@ -106,14 +116,13 @@ def sell_car():
 
 #Different search options to search for
 def search_car():
-    #TODO: figure out a way to print the query when executing the query
     display_search_option()
     search_options = int(input("Select a search option\n"))
     if search_options == 1:
         conn = sqlite3.connect('car.db')
         make_cursor = conn.cursor()
         make = input("What make of car are you looking for?")
-        makeString = "SELECT * FROM cars WHERE make = '%s'" % make
+        makeString = "SELECT * FROM cars WHERE MAKE = '%s'" % make
         try:
             make_cursor.execute(makeString)
 
@@ -126,7 +135,7 @@ def search_car():
         conn = sqlite3.connect('car.db')
         year = int(input("What year of car are you looking for?"))
         year_cursor = conn.cursor()
-        yearString = "SELECT * FROM cars WHERE make = '%s'" % year
+        yearString = "SELECT * FROM cars WHERE CARYEAR = '%s'" % year
         try:
             year_cursor.execute(yearString)
 
@@ -141,7 +150,7 @@ def search_car():
         conn = sqlite3.connect('car.db')
         model = input("What model are you looking for?")
         model_cursor = conn.cursor()
-        modelString = "SELECT * FROM cars WHERE make = '%s'" % model
+        modelString = "SELECT * FROM cars WHERE MODEL = '%s'" % model
         try:
             model_cursor.execute(modelString)
 
@@ -151,22 +160,18 @@ def search_car():
         except Error as e:
             print('Error: ', e, 'occured')
 
+    #Search method for price
     elif search_options == 4:
         conn = sqlite3.connect('car.db')
-        price = int(input("Type the price range"))
+        price = int(input("Type the price"))
         price_cursor = conn.cursor()
         if price >= 0 or price <= 20000:
             try:
-                price_cursor.execute('SELECT * FROM cars WHERE price >= 0 OR price <= 20000')
-
+                price_cursor.execute('SELECT * FROM cars WHERE PRICE = ?', (price))
+                for cars in price_cursor.fetchall():
+                    print(create_car(cars[0], cars[1], cars[2], cars[3]))
             except Error as e:
-                print('Error: ', e, 'occured')
-        elif price > 20000 or price <= 50000:
-            try:
-                price_cursor.execute('SELECT * FROM cars WHERE price > 20000 OR price <= 50000')
-
-            except Error as e:
-                print('Error: ', e, 'occured')
+                print('Error: ', e, 'occurred')
     elif search_options == 5:
         sys.exit()
     else:
