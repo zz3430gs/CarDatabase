@@ -8,7 +8,7 @@ def Main():
     print("Welcome to a car shop")
     while True:
         display_main_menu()
-        Create_car_table()
+        # Create_car_table()
         choices =  input("Select an option\n")
         if choices == '1':
             print("Search for a Car Method\n")
@@ -41,19 +41,20 @@ def Create_car_table():
 
     conn.execute(('''
     CREATE TABLE IF NOT EXISTS cars(
-    MAKE TEXT NOT NULL
-    YEAR INTEGER NOT NULL
-    MODEL TEXT NOT NULL
+    MAKE VARCHAR(50) NOT NULL,
+    CARYEAR INTEGER NOT NULL,
+    MODEL VARCHAR(50) NOT NULL,
     PRICE INTEGER NOT NULL);'''))
 
-    car_test_data()
+    # car_test_data()
     conn.close()
     print("DB closed")
 
 def create_car(make, year, model, price):
     make = Car(make, year, model, price)
+    return make
 
-
+#Add a new Car to the database
 def add_car():
     print("Add Car Method")
     make = ''
@@ -70,7 +71,7 @@ def add_car():
     add_car_to_database(car_make)
 
 def add_car_to_database(c):
-    #From group project movies catalog
+    #From group project, movies catalog
     conn = sqlite3.connect('car.db')
     print("Db open")
     print("Add car method")
@@ -96,66 +97,76 @@ def sell_car():
     price = int(input("What is the price of car"))
 
     delete_cursor = conn.cursor()
-
-    delete_cursor.execute('DELETE FROM cars WHERE (?,?,?,?)', (make,year,model,price))
+    delete_cursor.execute('DELETE FROM cars WHERE LIKE (?,?,?,?)', (make,year,model,price))
 
     conn.close()
     print("DB is closed")
 
 def search_car():
-    search_options = int(input("Select a search option"))
-    if search_options == '1':
+    display_search_option()
+    search_options = int(input("Select a search option\n"))
+    if search_options == 1:
+        conn = sqlite3.connect('car.db')
+        make = ''
         make = input("What make of car are you looking for?")
-        conn = sqlite3.connect('car.db')
-        make_cursor = conn.cursor()
         try:
-            make_cursor('SELECT * FROM cars WHERE make LIKE ?', ('%' + make + '%'))
-            for cars in make_cursor.fetchall():
-                print(create_car(make[0], str(make[1]), make[2], make[3]))
+            conn.execute('SELECT * FROM cars WHERE make LIKE ?', (make))
+            for cars in conn.fetchall():
+                print(create_car(cars[0], str(cars[1]), cars[2], cars[3]))
         except Error as e:
             print('Error: ', e, 'occured')
 
-    elif search_options == '2':
+    elif search_options == 2:
+        conn = sqlite3.connect('car.db')
+        year = 0
         year = int(input("What year of car are you looking for?"))
-        conn = sqlite3.connect('car.db')
-        year_cursor = conn.cursor()
+
         try:
-            year_cursor('SELECT * FROM cars WHERE year LIKE ?', ('%' + year + '%'))
+            conn.execute('SELECT * FROM cars WHERE year=?', year)
         except Error as e:
             print('Error: ', e, 'occured')
 
-    elif search_options == '3':
+    elif search_options == 3:
+        conn = sqlite3.connect('car.db')
+        model = ''
         model = input("What model are you looking for?")
-        conn = sqlite3.connect('car.db')
-        model_cursor = conn.cursor()
+
         try:
-            model_cursor('SELECT * FROM cars WHERE model LIKE ?', ('%' + model + '%'))
+            conn.execute('SELECT * FROM cars WHERE model LIKE ?', ('%' + model + '%'))
         except Error as e:
             print('Error: ', e, 'occured')
 
-    elif search_options == '4':
+    elif search_options == 4:
         conn = sqlite3.connect('car.db')
+        price = 0
         price = int(input("Type the price range"))
-        price_cursor = conn.cursor()
         if price >= 0 or price <= 20000:
             try:
-                price_cursor('SELECT * FROM cars WHERE price >= 0 OR <=20000')
+                conn.execute('SELECT * FROM cars WHERE price >= 0 OR price <= 20000')
             except Error as e:
                 print('Error: ', e, 'occured')
         elif price > 20000 or price <= 50000:
             try:
-                price_cursor('SELECT * FROM cars WHERE price > 20000 OR <= 50000')
+                conn.execute('SELECT * FROM cars WHERE price > 20000 OR price <= 50000')
             except Error as e:
                 print('Error: ', e, 'occured')
+    elif search_options == 5:
+        sys.exit()
     else:
         print("Not a valid option")
 
-
+def display_search_option():
+    print('1) Search by make\n'
+          '2) Search by year\n'
+          '3) Search by model\n'
+          '4) Search by price\n'
+          '5) Exit Program\n')
+#Tried to add but didn't seem to work
 def car_test_data():
-    conn = sqlite3('car.db')
+    conn = sqlite3.connect('car.db')
     print("Adding car data")
 
-    conn.execute('INSERT INTO cars VALUES'("Toyota", 2009, "Corolla", 16000))
+    conn.execute('INSERT INTO cars VALUES'('Toyota', 2009, 'Corolla', 16000))
     conn.execute('INSERT INTO cars VALUES'("Honda", 2001, "Accord", 15000))
     conn.execute('INSERT INTO cars VALUES'("Subaru", 2004, "Impreza", 25000))
     conn.execute('INSERT INTO cars VALUES'("Toyota", 2009, "Tundra", 22000))
@@ -166,4 +177,7 @@ def car_test_data():
 
     print("Db closed")
     conn.close()
+
+Create_car_table()
+# car_test_data()
 Main()
