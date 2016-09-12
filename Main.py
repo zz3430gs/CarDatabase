@@ -44,6 +44,7 @@ def Create_car_table():
 
     conn.execute(('''
     CREATE TABLE IF NOT EXISTS cars(
+    ID PRIMARY KEY
     MAKE VARCHAR(50) NOT NULL,
     CARYEAR INTEGER NOT NULL,
     MODEL VARCHAR(50) NOT NULL,
@@ -91,18 +92,13 @@ def sell_car():
 
     conn = sqlite3.connect('car.db')
     print("Sell Car Method")
-    make = ''
-    year = 0
-    model = ''
-    price = 0
+    model = input("What is the model of car\n")
 
-    make = input("What is the make of car\n")
-    year = int(input("What is the year of car\n"))
-    model = input("What is the model of car")
-    price = int(input("What is the price of car"))
-
+    #for now it works but I know it will delete others of the same model
+    #TODO: delete a car but not delete a car with the same make and model but different year and pricing
+    stringQuery = "DELETE FROM cars WHERE MAKE = '%s'" % model
     delete_cursor = conn.cursor()
-    delete_cursor.execute('DELETE FROM cars WHERE ')(make,year,model,price)
+    delete_cursor.execute(stringQuery)
 
     conn.close()
     print("DB is closed")
