@@ -44,7 +44,6 @@ def Create_car_table():
 
     conn.execute(('''
     CREATE TABLE IF NOT EXISTS cars(
-    ID PRIMARY KEY
     MAKE VARCHAR(50) NOT NULL,
     CARYEAR INTEGER NOT NULL,
     MODEL VARCHAR(50) NOT NULL,
@@ -105,51 +104,60 @@ def sell_car():
 
 #Different search options to search for
 def search_car():
+    #TODO: figure out a way to print the query when executing the query
     display_search_option()
     search_options = int(input("Select a search option\n"))
     if search_options == 1:
         conn = sqlite3.connect('car.db')
-        make = ''
+        make_cursor = conn.cursor()
         make = input("What make of car are you looking for?")
+        makeString = "SELECT * FROM cars WHERE make = '%s'" % make
         try:
-            conn.execute('SELECT * FROM cars WHERE make LIKE ?', (make))
-            for cars in conn.fetchall():
-                print(create_car(cars[0], str(cars[1]), cars[2], cars[3]))
+            make_cursor.execute(makeString)
+            for cars in make_cursor.fetchall():
+                print(create_car(cars[0], str(cars[1]), cars[2], str(cars[3])))
         except Error as e:
             print('Error: ', e, 'occured')
 
     elif search_options == 2:
         conn = sqlite3.connect('car.db')
-        year = 0
         year = int(input("What year of car are you looking for?"))
-
+        year_cursor = conn.cursor()
+        yearString = "SELECT * FROM cars WHERE make = '%s'" % year
         try:
-            conn.execute('SELECT * FROM cars WHERE year=?', year)
+            year_cursor.execute(yearString)
+            for cars in year_cursor.fetchall():
+                print(create_car(cars[0], str(cars[1]), cars[2], str(cars[3])))
         except Error as e:
             print('Error: ', e, 'occured')
 
+
+    #tries to search for models
     elif search_options == 3:
         conn = sqlite3.connect('car.db')
-        model = ''
         model = input("What model are you looking for?")
-
+        model_cursor = conn.cursor()
+        modelString = "SELECT * FROM cars WHERE make = '%s'" % model
         try:
-            conn.execute('SELECT * FROM cars WHERE model LIKE ?', ('%' + model + '%'))
+            model_cursor.execute(modelString)
+            #Tries to print out the query
+            for cars in model_cursor.fetchall():
+                print(create_car(cars[0], str(cars[1]), cars[2], str(cars[3])))
         except Error as e:
             print('Error: ', e, 'occured')
 
     elif search_options == 4:
         conn = sqlite3.connect('car.db')
-        price = 0
         price = int(input("Type the price range"))
+        price_cursor = conn.cursor()
         if price >= 0 or price <= 20000:
             try:
-                conn.execute('SELECT * FROM cars WHERE price >= 0 OR price <= 20000')
+                price_cursor.execute('SELECT * FROM cars WHERE price >= 0 OR price <= 20000')
             except Error as e:
                 print('Error: ', e, 'occured')
         elif price > 20000 or price <= 50000:
             try:
-                conn.execute('SELECT * FROM cars WHERE price > 20000 OR price <= 50000')
+                price_cursor.execute('SELECT * FROM cars WHERE price > 20000 OR price <= 50000')
             except Error as e:
                 print('Error: ', e, 'occured')
     elif search_options == 5:
