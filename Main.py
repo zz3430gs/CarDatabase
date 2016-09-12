@@ -102,7 +102,7 @@ def sell_car():
     price = int(input("What is the price of car"))
 
     delete_cursor = conn.cursor()
-    delete_cursor.execute('DELETE FROM cars WHERE LIKE (?,?,?,?)', (make,year,model,price))
+    delete_cursor.execute('DELETE FROM cars WHERE ')(make,year,model,price)
 
     conn.close()
     print("DB is closed")
