@@ -57,7 +57,7 @@ def create_car(make, year, model, price):
     make = Car(make, year, model, price)
     return make
 
-def method():
+def car_List():
     car_list = []
     for cars in Car:
         make = cars[0].strip()
@@ -70,10 +70,6 @@ def method():
 #Add a new Car to the database
 def add_car():
     print("Add Car Method")
-    make = ''
-    year = 0
-    model = ''
-    price = 0
 
     make = input("What is the make of the car?\n")
     year = int(input("What is the year of the car?\n"))
