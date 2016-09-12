@@ -4,6 +4,7 @@ import sqlite3
 from Car import Car
 import sys
 
+#Options on what to do
 def Main():
     print("Welcome to a car shop")
     while True:
@@ -28,12 +29,14 @@ def Main():
         else:
             print("Not a valid option\n")
 
+#Displays menu on what to do
 def display_main_menu():
     print('1) Search Car\n'
           '2) Add Car\n'
           '3) Sell Car\n'
           '4) Exit\n')
 
+#Create table if it does not exist
 def Create_car_table():
     conn = sqlite3.connect('car.db')
     print("DB is opened")
@@ -70,6 +73,7 @@ def add_car():
     car_make = create_car(make, year, model, price)
     add_car_to_database(car_make)
 
+#Adds a new car to database
 def add_car_to_database(c):
     #From group project, movies catalog
     conn = sqlite3.connect('car.db')
@@ -82,6 +86,7 @@ def add_car_to_database(c):
     except Error as e:
         print("Error: ", e, "occured")
 
+#Deletes the car from database
 def sell_car():
 
     conn = sqlite3.connect('car.db')
@@ -102,6 +107,7 @@ def sell_car():
     conn.close()
     print("DB is closed")
 
+#Different search options to search for
 def search_car():
     display_search_option()
     search_options = int(input("Select a search option\n"))
@@ -155,13 +161,16 @@ def search_car():
     else:
         print("Not a valid option")
 
+#Display options to what to search for
 def display_search_option():
     print('1) Search by make\n'
           '2) Search by year\n'
           '3) Search by model\n'
           '4) Search by price\n'
           '5) Exit Program\n')
+
 #Tried to add but didn't seem to work
+#TODO: try to make a test data that works
 def car_test_data():
     conn = sqlite3.connect('car.db')
     print("Adding car data")
